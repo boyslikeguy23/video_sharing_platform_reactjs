@@ -56,7 +56,7 @@ const Routers = () => {
           <Route path="/story/:userId" element={<Story />} />
           <Route path="/account/edit" element={<EditProfilePage />} />
           <Route path="/reels" element={<ReelViewer />} />
-          <Route path="/:username/follower" element={<Profile />} />
+          <Route path="/:username/followers" element={<Profile />} />
           <Route path="/:username/following" element={<Profile />} />
         </Routes>
       </div>

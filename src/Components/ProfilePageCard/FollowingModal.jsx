@@ -31,7 +31,14 @@ const FollowingModal = ({ isOpen, onClose, following = [], onUnfollow }) => {
           />
           <div className="max-h-[350px] overflow-y-auto">
             {filteredFollowing.map((user) => (
-              <div key={user.id} className="flex items-center justify-between py-2">
+              <div
+              key={user.id}
+              className="flex items-center justify-between py-2 cursor-pointer hover:bg-gray-100 rounded"
+              onClick={() => {
+                onClose();
+                navigate(`/${user.username}`);
+              }}
+              >
                 <div className="flex items-center">
                   <img
                     src={user.userImage || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
@@ -42,13 +49,23 @@ const FollowingModal = ({ isOpen, onClose, following = [], onUnfollow }) => {
                     <p className="font-semibold">{user.username}</p>
                     <p className="text-xs opacity-70">{user.name}</p>
                   </div>
+                  {/* <div className="">
+                  <img
+                    className="w-9 h-9 rounded-full"
+                    src={
+                      comment?.userDto.userImage ||
+                      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                    }
+                    alt=""
+                  />
+                  </div> */}
                 </div>
-                <button
+                {/* <button
                   className="bg-slate-100 hover:bg-slate-300 px-4 py-1 rounded font-semibold text-sm"
                   onClick={() => onUnfollow && onUnfollow(user.id)}
                 >
                   Bỏ theo dõi
-                </button>
+                </button> */}
               </div>
             ))}
             {filteredFollowing.length === 0 && (

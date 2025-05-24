@@ -2,12 +2,7 @@ import React from "react";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Input } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const FollowerModal = ({ isOpen, onClose, followers = [], onRemoveFollower }) => {
-
-  const handleClose = () => {
-    onClose();
-    navigate("/");
-  };
+const FollowerModal = ({ isOpen, onClose, followers = [] }) => {
 
   const navigate = useNavigate();
   const [search, setSearch] = React.useState("");
@@ -21,7 +16,7 @@ const FollowerModal = ({ isOpen, onClose, followers = [], onRemoveFollower }) =>
   );
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="md" isCentered>
+    <Modal isOpen={isOpen}  onClose={onClose} size="md" isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Người theo dõi</ModalHeader>
@@ -35,7 +30,11 @@ const FollowerModal = ({ isOpen, onClose, followers = [], onRemoveFollower }) =>
           />
           <div className="max-h-[350px] overflow-y-auto">
             {filteredFollowers.map((user) => (
-              <div key={user.id} className="flex items-center justify-between py-2">
+              <div key={user.id} className="flex items-center justify-between py-2 cursor-pointer hover:bg-gray-100 rounded"
+              onClick={() => {
+              onClose(); // Đóng modal
+              navigate(`/${user.username}`); // Chuyển đến profile user
+              }}>
                 <div className="flex items-center">
                   <img
                     src={user.userImage || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
@@ -47,12 +46,12 @@ const FollowerModal = ({ isOpen, onClose, followers = [], onRemoveFollower }) =>
                     <p className="text-xs opacity-70">{user.name}</p>
                   </div>
                 </div>
-                <button
+                {/* <button
                   className="bg-slate-100 hover:bg-slate-300 px-4 py-1 rounded font-semibold text-sm"
                   onClick={() => onRemoveFollower && onRemoveFollower(user.id)}
                 >
                   Xóa
-                </button>
+                </button> */}
               </div>
             ))}
             {filteredFollowers.length === 0 && (

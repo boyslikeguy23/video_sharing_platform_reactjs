@@ -15,7 +15,7 @@ const UserDetailCard = ({ user, isRequser, isFollowing }) => {
   const { post } = useSelector((store) => store);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user } = useSelector((store) => store);
+  // const { user } = useSelector((store) => store);
   
   const [isFollow,setIsFollow]=useState(false);
   const [isFollowerModalOpen, setFollowerModalOpen] = useState(false);
@@ -35,11 +35,25 @@ const UserDetailCard = ({ user, isRequser, isFollowing }) => {
   };
   const handleOpenFollowerModal = () => {
     navigate(`/${user.username}/followers`);
-    onOpen();
+    setFollowerModalOpen(true);
+    // navigate(`/${user.username}/followers`);
+    // onOpen();
+  };
+  const handleCloseFollowerModal = () => {
+    setFollowerModalOpen(false);
+    navigate(`/${user.username}`);
+
   };
   const handleOpenFollowingModal = () => {
     navigate(`/${user.username}/following`);
-    onOpen();
+    setFollowingModalOpen(true);
+    // navigate(`/${user.username}/following`);
+    // onOpen();
+  };
+  const handleCloseFollowingModal = () => {
+    setFollowingModalOpen(false);
+    navigate(`/${user.username}`);
+
   };
 
   const handleFollowUser = () => {
@@ -50,6 +64,8 @@ const UserDetailCard = ({ user, isRequser, isFollowing }) => {
 
   const handleUnFollowUser = () => {
     dispatch(unFollowUserAction(data));
+    // console.log("unfollow");
+    // setIsFollow(false)
   };
 
   useEffect(()=>{
@@ -118,17 +134,15 @@ setIsFollow(isFollowing)
       </div>
       <FollowerModal
       followers={user.follower}
-      onRemoveFollower={(id) => {/* Xử lý xóa follower */}}
-      isOpen={isOpen}
-      onClose={onClose}
-      onOpen={onOpen}
+      //onRemoveFollower={handleUnFollowUser}
+      isOpen={isFollowerModalOpen}
+      onClose={handleCloseFollowerModal}
       />
       <FollowingModal
       following={user.following}
-      onUnfollow={handleFollowUser}
-      isOpen={isOpen}
-      onClose={onClose}
-      onOpen={onOpen}
+      //onUnfollow={handleFollowUser}
+      isOpen={isFollowingModalOpen}
+      onClose={handleCloseFollowingModal}
       />
     </div>
   );
