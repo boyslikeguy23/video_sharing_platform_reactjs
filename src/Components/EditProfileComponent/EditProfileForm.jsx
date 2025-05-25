@@ -6,6 +6,7 @@ import {
   FormLabel,
   Input,
   Stack,
+  Select,
   Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -189,7 +190,7 @@ const EditProfileForm = () => {
               public profile.
             </p>
           </div>
-
+{/* 
           <FormControl className="flex " id="email">
             <FormLabel className="w-[15%]">Email address</FormLabel>
             <div className="w-full">
@@ -200,7 +201,7 @@ const EditProfileForm = () => {
                 {...formik.getFieldProps("email")}
               />
             </div>
-          </FormControl>
+          </FormControl> */}
 
           <FormControl className="flex " id="mobile">
             <FormLabel className="w-[15%]">Phone number</FormLabel>
@@ -213,7 +214,7 @@ const EditProfileForm = () => {
               />
             </div>
           </FormControl>
-          <FormControl className="flex " id="gender">
+          {/* <FormControl className="flex " id="gender">
             <FormLabel className="w-[15%]">Gender</FormLabel>
             <div className="w-full">
               <Input
@@ -222,6 +223,20 @@ const EditProfileForm = () => {
                 type="text"
                 {...formik.getFieldProps("gender")}
               />
+            </div>
+          </FormControl> */}
+          <FormControl className="flex " id="gender">
+            <FormLabel className="w-[15%]">Gender</FormLabel>
+            <div className="w-full">
+              <Select
+                placeholder="Chọn giới tính"
+                className="w-full"
+                {...formik.getFieldProps("gender")}
+              >
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              </Select>
             </div>
           </FormControl>
           {/* <FormControl className="flex " id="private">

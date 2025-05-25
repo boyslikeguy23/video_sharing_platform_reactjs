@@ -20,7 +20,7 @@ const UserDetailCard = ({ user, isRequser, isFollowing }) => {
   const [isFollow,setIsFollow]=useState(false);
   const [isFollowerModalOpen, setFollowerModalOpen] = useState(false);
   const [isFollowingModalOpen, setFollowingModalOpen] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
 
   const goToAccountEdit = () => {
     navigate("/account/edit");
@@ -71,7 +71,7 @@ const UserDetailCard = ({ user, isRequser, isFollowing }) => {
   useEffect(()=>{
 setIsFollow(isFollowing)
   },[isFollowing])
-
+  if (!user) return null;
   return (
     <div className="py-10">
       <div className="flex items-center">

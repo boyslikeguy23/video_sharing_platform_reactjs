@@ -18,7 +18,7 @@ const HomeRight = ({suggestedUser}) => {
             />
             <div className="ml-3">
               <p>{user.reqUser?.username}</p>
-              <p className="opacity-70">{user.reqUser?.username}</p>
+              <p className="opacity-70">{user.reqUser?.name}</p>
             </div>
           </div>
           <p className="text-blue-600 font-semibold">switch</p>

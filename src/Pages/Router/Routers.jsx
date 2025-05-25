@@ -6,11 +6,11 @@ import StoryPage from "../../Components/Demo/Demo";
 import Sidebar from "../../Components/Sidebar/Sidebar";
 import { getUserProfileAction } from "../../Redux/User/Action";
 import Auth from "../Auth/Auth";
-import EditProfilePage from "../EditProfile/EditProfilePage";
 import HomePage from "../HomePage/HomePage";
 import Profile from "../Profile/Profile";
 import Story from "../Story/Story";
 import ReelViewer from "../ReelViewer/ReelViewer";
+import EditProfileForm from "../../Components/EditProfileComponent/EditProfileForm";
 const Routers = () => {
   const location =useLocation();
   const reqUser = useSelector(store=>store.user.reqUser);
@@ -54,7 +54,7 @@ const Routers = () => {
           <Route path="/:username" element={<Profile />} />
           <Route path="/demo" element={<StoryPage />} />
           <Route path="/story/:userId" element={<Story />} />
-          <Route path="/account/edit" element={<EditProfilePage />} />
+          <Route path="/account/edit" element={<EditProfileForm />} />
           <Route path="/reels" element={<ReelViewer />} />
           <Route path="/:username/followers" element={<Profile />} />
           <Route path="/:username/following" element={<Profile />} />

@@ -24,14 +24,17 @@ const Profile = () => {
     dispatch(getUserProfileAction(token))
     dispatch(findByUsernameAction(data))
   },[username,user.follower,user.following])
-
+  const profileUser = isRequser ? user.reqUser : user.findByUsername;
+  if (!profileUser) {
+    return <div>Loading...</div>;
+  }
     return (
     <div className='px-20'>
         <div>
-            <UserDetailCard user={isRequser?user.reqUser:user.findByUsername} isFollowing={isFollowed} isRequser={isRequser}/>
+            <UserDetailCard user={profileUser} isFollowing={isFollowed} isRequser={isRequser}/>
         </div>
         <div>
-            <ProfilePostsPart user={isRequser?user.reqUser:user.findByUsername}/>
+            <ProfilePostsPart user={profileUser}/>
         </div>
     </div>
   )
