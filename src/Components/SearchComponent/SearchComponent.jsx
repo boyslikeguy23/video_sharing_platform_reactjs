@@ -36,8 +36,8 @@ const SearchComponent = ({setIsSearchVisible}) => {
       <hr />
       <div className="px-3 pt-5">
         {!user?.searchResult?.isError?user?.searchResult?.map((item) => (
-          <SearchUserCard setIsSearchVisible={setIsSearchVisible} key={item.id} username={item.username} image={item?.image}/>
-        )):<h1 className="pt-10 font-bold text-center">User Not Exist</h1>}
+          <SearchUserCard setIsSearchVisible={setIsSearchVisible} key={item.id} username={item.username} name={item.name} image={item?.image}/>
+        )):<h1 className="pt-10 font-bold text-center">Người dùng không tồn tại</h1>}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const SearchUserCard = ({username,image,setIsSearchVisible}) => {
+const SearchUserCard = ({name,username,image,setIsSearchVisible}) => {
   const navigate=useNavigate()
   const handleNavigate=()=>{
     navigate(`/${username}`)
@@ -17,7 +17,7 @@ const SearchUserCard = ({username,image,setIsSearchVisible}) => {
             />
             <div className="ml-3">
               <p>{username}</p>
-              <p className="opacity-70">{username}</p>
+              <p className="opacity-70">{name}</p>
             </div>
           </div>
     </div>
