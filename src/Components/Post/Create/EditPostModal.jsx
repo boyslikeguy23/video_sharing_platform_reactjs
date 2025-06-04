@@ -18,9 +18,8 @@ import { createPost, findPostByIdAction } from "../../../Redux/Post/Action";
 import { uploadToCloudinary } from "../../../Config/UploadToCloudinary";
 import CommentModal from "../../Comment/CommentModal";
 import SpinnerCard from "../../Spinner/Spinner";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { editPost } from "../../../Redux/Post/Action";
-
 const EditPostModal = ({ onOpen, isOpen, onClose }) => {
   const finalRef = React.useRef(null);
   const [file, setFile] = useState(null);
@@ -28,7 +27,9 @@ const EditPostModal = ({ onOpen, isOpen, onClose }) => {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
   const { post, comments, user } = useSelector((store) => store);
- 
+  const navigate = useNavigate();
+  const location = useLocation();
+
 
   const [postData, setPostData] = useState({
     image: "",
@@ -68,8 +69,10 @@ useEffect(() => {
       data: postData,
     };
     if (token && postData.image) {
-      dispatch(editPost(data));
+      navigate(-1);
       handleClose();
+      
+
     }
 
     console.log("data --- ", data);
@@ -78,6 +81,9 @@ useEffect(() => {
     onClose();
     setFile(null);
     setPostData({ image: "", caption: "", location: "" });
+    // navigate(-1);
+    navigate(location.state?.from || "/");
+
   }
   useEffect(() => {
     if (postId) {
