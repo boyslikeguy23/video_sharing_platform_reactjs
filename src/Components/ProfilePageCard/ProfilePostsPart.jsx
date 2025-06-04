@@ -18,14 +18,14 @@ const ProfilePostsPart = ({user}) => {
 
   const tabs = [
     {
-      tab: "Post",
+      tab: "Bài đăng",
       icon: <AiOutlineTable className="text-xs" />,
       activeTab: "",
     },
     { tab: "Reels", icon: <RiVideoLine className="text-xs" />, activeTab: "" },
-    { tab: "Saved", icon: <BiBookmark className="text-xs" />, activeTab: "" },
+    { tab: "Đã lưu", icon: <BiBookmark className="text-xs" />, activeTab: "" },
     {
-      tab: "Tagged",
+      tab: "Được gắn thẻ",
       icon: <AiOutlineUser className="text-xs" />,
       activeTab: "",
     },

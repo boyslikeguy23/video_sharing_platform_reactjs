@@ -68,7 +68,7 @@ const EditProfileForm = () => {
       };
       dispatch(editUserDetailsAction(data));
       toast({
-        title: "Account updated...",
+        title: "Câp nhật thành công...",
 
         status: "success",
         duration: 5000,
@@ -115,14 +115,14 @@ const EditProfileForm = () => {
             onClick={onOpen}
             className="font-bold text-blue-800 cursor-pointer"
           >
-            Change Profile Photo
+            Thay đổi ảnh đại diện
           </p>
         </div>
       </div>
       <form onSubmit={formik.handleSubmit}>
         <Stack spacing="6">
           <FormControl className="flex " id="name">
-            <FormLabel className="w-[15%]">Name</FormLabel>
+            <FormLabel className="w-[15%]">Tên</FormLabel>
             <div className="w-full">
               <Input
                 placeholder="Name"
@@ -131,16 +131,16 @@ const EditProfileForm = () => {
                 {...formik.getFieldProps("name")}
               />
               <FormHelperText className="text-xs">
-                Help people discover your account by using the name you're known
-                by: either your full name, nickname, or business name.
+                Giúp mọi người khám phá tài khoản của bạn bằng cách sử dụng tên mà bạn được biết đến
+                : tên đầy đủ, biệt danh hoặc tên doanh nghiệp của bạn.
               </FormHelperText>
               <FormHelperText className="text-xs">
-                You can only change your name twice within 14 days.
+                Bạn chỉ có thể đổi tên hai lần trong vòng 14 ngày.
               </FormHelperText>
             </div>
           </FormControl>
           <FormControl className="flex " id="username">
-            <FormLabel className="w-[15%]">Username</FormLabel>
+            <FormLabel className="w-[15%]">Tên đại diện</FormLabel>
             <div className="w-full">
               <Input
                 placeholder="Username"
@@ -149,8 +149,8 @@ const EditProfileForm = () => {
                 {...formik.getFieldProps("username")}
               />
               <FormHelperText className="text-xs">
-                In most cases, you'll be able to change your username back to
-                ashok.zarmariya for another 14 days. Learn more
+                Trong hầu hết các trường hợp, bạn sẽ có thể đổi tên người dùng của mình trở lại
+                trong 14 ngày nữa. Tìm hiểu thêm
               </FormHelperText>
             </div>
           </FormControl>
@@ -164,14 +164,12 @@ const EditProfileForm = () => {
                 {...formik.getFieldProps("website")}
               />
               <FormHelperText className="text-xs">
-                Editing your links is only available on mobile. Visit the
-                Instagram app and edit your profile to change the websites in
-                your bio.
+                
               </FormHelperText>
             </div>
           </FormControl>
           <FormControl className="flex " id="bio">
-            <FormLabel className="w-[15%]">Bio</FormLabel>
+            <FormLabel className="w-[15%]">Tiểu sử</FormLabel>
             <div className="w-full">
               <Textarea
                 placeholder="Bio"
@@ -183,11 +181,11 @@ const EditProfileForm = () => {
           </FormControl>
 
           <div className="py-10">
-            <p className="font-bold text-sm">Personal information</p>
+            <p className="font-bold text-sm">Thông tin cá nhân</p>
             <p className="text-xs">
-              Provide your personal information, even if the account is used for
-              a business, a pet or something else. This won't be a part of your
-              public profile.
+              Cung cấp thông tin cá nhân của bạn, ngay cả khi tài khoản được sử dụng cho
+              một doanh nghiệp, thú cưng hoặc mục đích khác. Thông tin này sẽ không nằm trong
+              hồ sơ công khai của bạn.
             </p>
           </div>
 {/* 
@@ -204,7 +202,7 @@ const EditProfileForm = () => {
           </FormControl> */}
 
           <FormControl className="flex " id="mobile">
-            <FormLabel className="w-[15%]">Phone number</FormLabel>
+            <FormLabel className="w-[15%]">Số điện thoại</FormLabel>
             <div className="w-full">
               <Input
                 placeholder="Phone"
@@ -226,7 +224,7 @@ const EditProfileForm = () => {
             </div>
           </FormControl> */}
           <FormControl className="flex " id="gender">
-            <FormLabel className="w-[15%]">Gender</FormLabel>
+            <FormLabel className="w-[15%]">Giới tính</FormLabel>
             <div className="w-full">
               <Select
                 placeholder="Chọn giới tính"
@@ -247,7 +245,7 @@ const EditProfileForm = () => {
 
           <div>
             <Button colorScheme="blue" type="submit" className="">
-              submit
+              Lưu
             </Button>
           </div>
         </Stack>

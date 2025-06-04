@@ -88,7 +88,7 @@ const CreatePostModal = ({ onOpen, isOpen, onClose }) => {
       setIsImageUploaded("uploaded");
     } else {
       setFile(null);
-      alert("Please select an image/video file.");
+      alert("Hãy chọn video từ máy tính của bạn");
     }
   };
 
@@ -123,7 +123,7 @@ function handleClose(){
         <ModalOverlay />
         <ModalContent fontSize={"sm"}>
           <div className="flex justify-between py-1 px-10 items-center">
-            <p>Create New Post</p>
+            <p>Tạo bài viết mới</p>
             <Button
               onClick={handleSubmit}
               className="inline-flex"
@@ -131,7 +131,7 @@ function handleClose(){
               size={"sm"}
               variant="ghost"
             >
-              Share
+              Chia sẻ
             </Button>
           </div>
 
@@ -153,11 +153,11 @@ function handleClose(){
                           isDragOver ? "text-blue-800" : ""
                         }`}
                       />
-                      <p>Drag photos or videos here </p>
+                      <p>Kéo video vào đây </p>
                     </div>
 
                     <label for="file-upload" className="custom-file-upload">
-                      Select from computer
+                      Chọn video từ máy tính
                     </label>
                     <input
                       type="file"
@@ -207,7 +207,7 @@ function handleClose(){
                 <div className="px-2">
                   <textarea
                     className="captionInput"
-                    placeholder="Write a caption..."
+                    placeholder="Viết chú thích..."
                     name="caption"
                     rows="8"
 
@@ -223,7 +223,7 @@ function handleClose(){
                   <input
                     className="locationInput"
                     type="text"
-                    placeholder="Add Location"
+                    placeholder="Thêm địa điểm"
                     name="location"
                     onChange={handleInputChange}
                   />

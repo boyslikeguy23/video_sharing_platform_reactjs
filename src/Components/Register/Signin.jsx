@@ -16,10 +16,10 @@ import { getUserProfileAction } from "../../Redux/User/Action";
 // import { Link } from "react-router-dom"
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email address").required("Required"),
+  email: Yup.string().email("Email không hợp lệ").required("Yêu cầu nhập email"),
   password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .required("Required"),
+    .min(8, "Mật khẩu ít nhất 8 ký tự")
+    .required("Yêu cầu nhập mật khẩu"),
 });
 
 const Signin = () => {
@@ -30,7 +30,7 @@ const Signin = () => {
   const navigate = useNavigate();
   const { user,signin } = useSelector((store) => store);
   const toast = useToast();
-  const logoText = collapsed ? "I" : "Insta-React";
+  const logoText = collapsed ? "I" : "Vidstagram";
   const token = localStorage.getItem("token");
   console.log("token in signin page ",token)
   console.log("reqUser -: ", user);
@@ -42,7 +42,7 @@ const Signin = () => {
     if (user?.reqUser?.username && token) {
       navigate(`/${user.reqUser?.username}`);
       toast({
-        title: "signin successfull",
+        title: "Đăng nhập thành công",
         status: "success",
         duration: 8000,
         isClosable: true,
@@ -50,17 +50,17 @@ const Signin = () => {
     }
   }, [user.reqUser]);
 
-  useEffect(() => {
-  if (signin?.error) {
-    toast({
-      title: "Đăng nhập không thành công",
-      description: signin.error || "Vui lòng kiểm tra lại email và mật khẩu.",
-      status: "error",
-      duration: 8000,
-      isClosable: true,
-    });
-  }
-}, [signin?.error, toast]);
+//   useEffect(() => {
+//   if (signin?.error) {
+//     toast({
+//       title: "Đăng nhập không thành công",
+//       description: signin.error || "Vui lòng kiểm tra lại email và mật khẩu.",
+//       status: "error",
+//       duration: 8000,
+//       isClosable: true,
+//     });
+//   }
+// }, [signin?.error, toast]);
 
   const handleSubmit = (values, actions) => {
     console.log(values);
@@ -100,7 +100,7 @@ const Signin = () => {
                       className="w-full"
                       {...field}
                       id="email"
-                      placeholder="Mobile Number Or Email"
+                      placeholder="Email"
                     />
                     <FormErrorMessage>{form.errors.email}</FormErrorMessage>
                   </FormControl>
@@ -117,19 +117,20 @@ const Signin = () => {
                       {...field}
                       type="password"
                       id="password"
-                      placeholder="Password"
+                      placeholder="Mật khẩu"
                     />
                     <FormErrorMessage>{form.errors.password}</FormErrorMessage>
                   </FormControl>
                 )}
               </Field>
               <p className="text-center">
-                People who use our service may have uploaded your contact
-                information to Instagram. Learn More
+                Những người sử dụng dịch vụ của chúng tôi có thể đã tải thông tin liên hệ của bạn lên Vidstagram. 
+                Tìm hiểu thêm
+
               </p>
               <p className="mt-5 text-center">
-                By signing up, you agree to our Terms , Privacy Policy and
-                Cookies Policy .
+              Bằng cách đăng ký, bạn đồng ý với Điều khoản, Chính sách quyền riêng tư và
+              Chính sách cookie của chúng tôi.
               </p>
               <Button
                 className="w-full"
@@ -138,7 +139,7 @@ const Signin = () => {
                 type="submit"
                 isLoading={formikProps.isSubmitting}
               >
-                Sign In
+                Đăng nhập
               </Button>
             </Form>
           )}
@@ -148,7 +149,7 @@ const Signin = () => {
       </div>
       
       <div className="w-full border border-slate-300 mt-5">
-<p className="text-center py-2">If You Don't Have Already Account <span onClick={()=>navigate("/signup")} className="ml-2 text-blue-700 cursor-pointer">Sign Up</span></p>
+<p className="text-center py-2">Nếu bạn không có tài khoản?<span onClick={()=>navigate("/signup")} className="ml-2 text-blue-700 cursor-pointer">Đăng kí</span></p>
       </div>
     </div>
   );

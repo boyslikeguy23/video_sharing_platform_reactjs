@@ -26,7 +26,7 @@ const Profile = () => {
   },[username,user.follower,user.following])
   const profileUser = isRequser ? user.reqUser : user.findByUsername;
   if (!profileUser) {
-    return <div>Loading...</div>;
+    return <div>Đang tải.......</div>;
   }
     return (
     <div className='px-20'>

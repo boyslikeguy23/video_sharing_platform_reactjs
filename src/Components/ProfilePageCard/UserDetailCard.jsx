@@ -92,11 +92,11 @@ setIsFollow(isFollowing)
             <p className="text-base">{user?.username}</p>
             <button className="text-xs py-1 px-5 bg-slate-100 hover:bg-slate-300 rounded-md font-semibold">
               {isRequser ? (
-                <span onClick={goToAccountEdit}>Edit profile</span>
+                <span onClick={goToAccountEdit}>Chỉnh sửa trang cá nhân</span>
               ) : isFollow ? (
-                <span onClick={handleUnFollowUser}>Unfollow </span>
+                <span onClick={handleUnFollowUser}>Bỏ theo dõi </span>
               ) : (
-                <span onClick={handleFollowUser}>Follow</span>
+                <span onClick={handleFollowUser}>Theo dõi</span>
               )}
             </button>
             <button className="text-xs py-1 px-5 bg-slate-100 hover:bg-slate-300 rounded-md font-semibold">
@@ -110,20 +110,20 @@ setIsFollow(isFollowing)
               <span className="font-semibold mr-2">
                 {post?.reqUserPost?.length || 0}
               </span>
-              <span>posts</span>
+              <span>bài đăng</span>
             </div>
 
             <div>
               <span className="font-semibold mr-2" >   {/* Viết hàm onClick tại đây để pop ra cái FollowerItem, đường dẫn URL thì là route đến Profile*/}
                 {user?.follower?.length}
               </span>
-              <span onClick={handleOpenFollowerModal} className="cursor-pointer">followers</span>
+              <span onClick={handleOpenFollowerModal} className="cursor-pointer">Người theo dõi</span>
             </div>
             <div>
               <span className="font-semibold mr-2" >  {/* Viết hàm onClick tại đây để pop ra cái FollowingItem, đường dẫn URL thì là route đến Profile*/}
                 {user?.following?.length}
               </span>
-              <span onClick={handleOpenFollowingModal} className="cursor-pointer">following</span>
+              <span onClick={handleOpenFollowingModal} className="cursor-pointer">Đang theo dõi</span>
             </div>
           </div>
           <div>

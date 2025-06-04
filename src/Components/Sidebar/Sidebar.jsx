@@ -20,25 +20,26 @@ const Sidebar = () => {
   const { user } = useSelector((store) => store);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isCreateReelModalOpen, setIsCreateReelModalOpen] = useState(false)
-  const logoText = collapsed ? "I" : "Insta-React";
+  const logoText = collapsed ? "I" : "Vidstagram";
 
   const handleTabClick = (tab) => {
     setActiveTab(tab);
-    if (tab === "Profile") {
+    if (tab === "Hồ sơ") {
       navigate(`/${user.reqUser?.username}`);
-    } else if (tab === "Home") {
+    } else if (tab === "Trang chủ") {
       navigate("/");
-    } else if (tab === "Create") {
+    } else if (tab === "Tạo") {
       onOpen();
     }
     else if(tab==="Reels"){
       navigate("reels")
     }
-    else if(tab==="Create Reels"){
+    else if(tab==="Tạo Reels"){
       handleOpenCreateReelModal()
+    } else if (tab === "Tin nhắn") {
+      navigate("/direct");
     }
-
-    if (tab === "Search") {
+    if (tab === "Tìm kiếm") {
       setIsSearchBoxVisible(true);
     } else setIsSearchBoxVisible(false);
   };
@@ -102,22 +103,22 @@ const Sidebar = () => {
           </div>
         </div>
 
-        <div clasName="relative">
+        <div className="relative">
           <div onClick={handleClick} className="flex items-center cursor-pointer ">
             <IoReorderThreeOutline className="text-2xl" />
-            {!isSearchBoxVisible && <p className="ml-5">More</p>}
+            {!isSearchBoxVisible && <p className="ml-5">Khác</p>}
           </div>
           <div className="absolute bottom-20 left-14  w-[70%]">
             {showDropdown && (
               <div className="shadow-md">
                 <p className=" w-full py-2 text-base px-4 border-t border-b  cursor-pointer">
-                  Switch Appearance
+                  Thay đổi diện mạo
                 </p>
                 <p className=" w-full py-2 text-base px-4 border-t border-b cursor-pointer">
-                  Saved
+                  Đã lưu
                 </p>
                 <p onClick={handleLogout} className=" w-full py-2 text-base px-4 border-t border-b cursor-pointer">
-                  Log out
+                  Đăng xuất
                 </p>
               
               

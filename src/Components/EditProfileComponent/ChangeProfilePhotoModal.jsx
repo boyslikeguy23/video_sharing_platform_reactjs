@@ -20,7 +20,7 @@ function ChangeProfilePhotoModal({ isOpen, onOpen, onClose,handleProfileImageCha
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader textAlign={"center"}>Modal Title</ModalHeader>
+          <ModalHeader textAlign={"center"}>Tiêu đề</ModalHeader>
 
           <ModalBody>
             <div className="flex flex-col items-center">
@@ -28,7 +28,7 @@ function ChangeProfilePhotoModal({ isOpen, onOpen, onClose,handleProfileImageCha
                 for="profileImage"
                 className="font-bold py-3 text-blue-600 text-center cursor-pointer text-xs w-full"
               >
-                Upload Photo
+                Đăng ảnh đại diện mới
               </label>
 
               <input onChange={handleProfileImageChange} type="file" id="profileImage" name="profileImage" />
@@ -37,11 +37,11 @@ function ChangeProfilePhotoModal({ isOpen, onOpen, onClose,handleProfileImageCha
             <hr />
 
             <p className="font-bold py-3 text-red-600 text-center">
-              Remove Photo
+              Xoá ảnh đại diện
             </p>
             <hr />
             <p className=" py-3 text-center" onClick={onClose}>
-              Cancel
+              Huỷ
             </p>
           </ModalBody>
           {/* <ModalFooter>

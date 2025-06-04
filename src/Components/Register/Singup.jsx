@@ -31,7 +31,7 @@ const validationSchema = Yup.object().shape({
 
 const Signup = () => {
   const [collapsed, setCollapsed] = useState(false);
-  const logoText = collapsed ? "I" : "Insta-React";
+  const logoText = collapsed ? "I" : "Vidstagram";
   const initialValues = { email: "", username: "", password: "", name:"" };
   const dispatch=useDispatch();
   const {auth}=useSelector(store=>store);
@@ -50,7 +50,7 @@ if(auth.signup?.username){
   
   navigate("/login")
   toast({
-    title: 'Account created successfully',
+    title: 'Đăng nhập thành công',
     status: 'success',
     duration: 8000,
     isClosable: true,
@@ -76,7 +76,8 @@ if(auth.signup?.username){
             {/* </Link> */}
           </div>
         <p className="font-bold opacity-50 text-lg mb-10 text-center">
-          Sign up to see photos and videos from your friends.
+          Đăng ký để xem ảnh và video từ bạn bè của bạn.
+
         </p>
         <Formik
           initialValues={initialValues}
@@ -95,7 +96,7 @@ if(auth.signup?.username){
                       className="w-full"
                       {...field}
                       id="email"
-                      placeholder="Mobile Number Or Email"
+                      placeholder="Email"
                     />
                     <FormErrorMessage>{form.errors.email}</FormErrorMessage>
                   </FormControl>
@@ -107,7 +108,7 @@ if(auth.signup?.username){
                     isInvalid={form.errors.username && form.touched.username}
                     mb={4}
                   >
-                    <Input {...field} id="username" placeholder="username" />
+                    <Input {...field} id="username" placeholder="Tên hiển thị" />
                     <FormErrorMessage>{form.errors.username}</FormErrorMessage>
                   </FormControl>
                 )}
@@ -118,7 +119,7 @@ if(auth.signup?.username){
                     isInvalid={form.errors.name && form.touched.name}
                     mb={4}
                   >
-                    <Input {...field} id="name" placeholder="Full Name" />
+                    <Input {...field} id="name" placeholder="Họ và tên" />
                     <FormErrorMessage>{form.errors.name}</FormErrorMessage>
                   </FormControl>
                 )}
@@ -133,19 +134,20 @@ if(auth.signup?.username){
                       {...field}
                       type="password"
                       id="password"
-                      placeholder="Password"
+                      placeholder="Mật khẩu"
                     />
                     <FormErrorMessage>{form.errors.password}</FormErrorMessage>
                   </FormControl>
                 )}
               </Field>
               <p className="text-center">
-                People who use our service may have uploaded your contact
-                information to Instagram. Learn More
+                Những người sử dụng dịch vụ của chúng tôi có thể đã tải thông tin liên hệ của bạn 
+                lên Instagram. Tìm hiểu thêm
+
               </p>
               <p className="mt-5 text-center">
-                By signing up, you agree to our Terms , Privacy Policy and
-                Cookies Policy .
+                Bằng cách đăng ký, bạn đồng ý với Điều khoản, Chính sách quyền riêng tư và
+                Chính sách cookie của chúng tôi.
               </p>
               <Button
                 className="w-full"
@@ -154,7 +156,7 @@ if(auth.signup?.username){
                 type="submit"
                 isLoading={formikProps.isSubmitting}
               >
-                Sign Up
+                Đăng kí
               </Button>
             </Form>
           )}
@@ -162,7 +164,7 @@ if(auth.signup?.username){
       </Box>
     </div>
     <div className="w-full border border-slate-300 mt-5">
-       <p className="text-center py-2">If You Have Already Account <span onClick={()=>navigate("/login")} className="ml-2 text-blue-700 cursor-pointer">Sign In</span></p>
+       <p className="text-center py-2">Nếu bạn đã có tài khoản? <span onClick={()=>navigate("/login")} className="ml-2 text-blue-700 cursor-pointer">Đăng nhập</span></p>
     </div>
     </div>
   
