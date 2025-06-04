@@ -72,7 +72,7 @@ const CommentCard = ({ comment }) => {
         <div className="flex items-center">
           <div className="">
             <img
-              className="w-9 h-9 rounded-full"
+              className="w-9 h-9 rounded-full flex-shrink-0 object-cover"
               src={
                 comment?.userDto.userImage ||
                 "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
@@ -80,7 +80,7 @@ const CommentCard = ({ comment }) => {
               alt=""
             />
           </div>
-          <div className="ml-3">
+          <div className="ml-3 comment-content">
             <p>
               <span className="font-semibold" onClick={() => handleNavigate(comment.userDto.username)}> {comment.userDto.username}</span>
               <span className="ml-2">{comment.content}</span>

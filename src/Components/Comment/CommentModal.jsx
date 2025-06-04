@@ -167,7 +167,7 @@ const CommentModal = ({
                   </div>
                   {post.singlePost?.likedByUsers?.length > 0 && (
                     <p className="text-sm font-semibold py-2">
-                      {post.singlePost?.likedByUsers?.length} likes{" "}
+                      {post.singlePost?.likedByUsers?.length} lượt thích{" "}
                     </p>
                   )}
                   <p className="opacity-70 pb-5">
@@ -177,7 +177,7 @@ const CommentModal = ({
                     <BsEmojiSmile className="mr-3 text-xl" />
                     <input
                       className="commentInput w-[70%]"
-                      placeholder="Add Comment..."
+                      placeholder="Thêm bình luận..."
                       type="text"
                       onKeyPress={handleOnEnterPress}
                       onChange={handleCommnetInputChange}

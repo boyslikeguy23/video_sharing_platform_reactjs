@@ -28,7 +28,7 @@ import {
                   for="profileImage"
                   className="font-bold py-3 text-blue-600 text-center cursor-pointer text-xs w-full"
                 >
-                 Delete
+                 Xoá
                 </label>
   
                 <input onChange={handleProfileImageChange} type="file" id="profileImage" name="profileImage" />
@@ -37,11 +37,11 @@ import {
               <hr />
   
               <p className="font-bold py-3 text-red-600 text-center">
-                Edit
+                Sửa
               </p>
               <hr />
               <p className=" py-3 text-center" onClick={onClose}>
-                Cancel
+                Huỷ
               </p>
             </ModalBody>
             {/* <ModalFooter>
