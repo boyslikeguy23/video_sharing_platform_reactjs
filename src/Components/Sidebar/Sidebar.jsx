@@ -37,7 +37,7 @@ const Sidebar = () => {
     else if(tab==="Tạo Reels"){
       handleOpenCreateReelModal()
     } else if (tab === "Tin nhắn") {
-      navigate("/direct");
+      navigate("/chat");
     }
     if (tab === "Tìm kiếm") {
       setIsSearchBoxVisible(true);
