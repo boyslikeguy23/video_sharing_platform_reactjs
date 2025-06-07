@@ -23,13 +23,13 @@ const SearchComponent = ({setIsSearchVisible}) => {
   return (
     <div className="search-container">
       <div className="px-3 pb-5">
-        <h1 className="text-xl pb-5">Search</h1>
+        <h1 className="text-xl pb-5">Tìm kiếm</h1>
 
         <input
           onChange={(e) =>debouncedHandleSearchUser(e.target.value)}
           className="search-input"
           type="text"
-          placeholder="Search..."
+          placeholder="Tìm kiếm..."
         />
       </div>
 
