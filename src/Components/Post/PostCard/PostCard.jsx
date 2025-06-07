@@ -11,7 +11,7 @@ import {
 import { FaRegComment } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   isPostLikedByUser,
   isReqUserPost,
@@ -43,6 +43,8 @@ const PostCard = ({
   const [commentContent, setCommentContent] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location_page = useLocation();
+
   const token = localStorage.getItem("token");
   const { user } = useSelector((store) => store);
   const [isSaved, setIsSaved] = useState(false);
@@ -148,7 +150,9 @@ const PostCard = ({
     setOPenEditPostModal(false)
   }
   const handleOpenEditPostModal=(postId)=>{
-    navigate(`/p/${postId}/edit`)
+    // navigate(`/p/${postId}/edit`)
+    navigate(`/p/${postId}/edit`, { state: { from: location_page.pathname } });
+
     setOPenEditPostModal(true);
   }
   // const handleOpenEditPostModal=()=>{
@@ -200,14 +204,14 @@ const PostCard = ({
                         onClick={()=>handleOpenEditPostModal(post.id)}
                         className="hover:bg-slate-300 py-2 px-4  cursor-pointer font-semibold"
                       >
-                        Edit
+                        Sửa
                       </p>
                       <hr />
                       <p
                         onClick={() => handleDeletePost(post.id)}
                         className="hover:bg-slate-300 px-4 py-2 cursor-pointer font-semibold"
                       >
-                        Delete
+                        Xoá
                       </p>
                     </div>
                   )}
@@ -258,7 +262,7 @@ const PostCard = ({
         </div>
         <div className="w-full py-2 px-5">
           {numberOfLikes > 0 && (
-            <p className="text-sm">{numberOfLikes} likes </p>
+            <p className="text-sm">{numberOfLikes} lượt thích </p>
           )}
 
          <p className="py-2">
@@ -269,7 +273,7 @@ const PostCard = ({
               onClick={handleOpenCommentModal}
               className="opacity-50 text-sm py-2 -z-0 cursor-pointer"
             >
-              View all {post?.comments?.length} comments
+              Xem tất cả {post?.comments?.length} bình luận
             </p>
           )}
         </div>
