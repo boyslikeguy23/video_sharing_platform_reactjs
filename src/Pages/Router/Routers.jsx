@@ -11,6 +11,7 @@ import Profile from "../Profile/Profile";
 import Story from "../Story/Story";
 import ReelViewer from "../ReelViewer/ReelViewer";
 import EditProfileForm from "../../Components/EditProfileComponent/EditProfileForm";
+import Chat from "../../Components/Chat/Chat";
 const Routers = () => {
   const location =useLocation();
   const reqUser = useSelector(store=>store.user.reqUser);
@@ -58,6 +59,9 @@ const Routers = () => {
           <Route path="/reels" element={<ReelViewer />} />
           <Route path="/:username/followers" element={<Profile />} />
           <Route path="/:username/following" element={<Profile />} />
+          {/* <Route path="/direct" element={<ChatDemo />} /> */}
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/chat/:userId" element={<Chat />} />
         </Routes>
       </div>
     </div>
