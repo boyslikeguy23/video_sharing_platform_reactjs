@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TbCircleDashed } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { followUserAction, unFollowUserAction } from "../../Redux/User/Action";
+import { followUserAction, unFollowUserAction, removeFollowerAction, findByUsernameAction } from "../../Redux/User/Action";
 import "./UserDetailCard.css"
 import FollowerModal from "./FollowerModal";
 import FollowingModal from "./FollowingModal";
@@ -57,20 +57,31 @@ const UserDetailCard = ({ user, isRequser, isFollowing }) => {
   };
 
   const handleFollowUser = () => {
-    dispatch(followUserAction(data));
-    console.log("follow");
-    setIsFollow(true)
+    dispatch(followUserAction(data)).then(() => {
+      dispatch(findByUsernameAction({ token, username: user.username }));
+    });
+    setIsFollow(true);
   };
 
   const handleUnFollowUser = () => {
-    dispatch(unFollowUserAction(data));
-    // console.log("unfollow");
-    // setIsFollow(false)
+    dispatch(unFollowUserAction(data)).then(() => {
+      dispatch(findByUsernameAction({ token, username: user.username }));
+    });
+    setIsFollow(false);
   };
 
   useEffect(()=>{
 setIsFollow(isFollowing)
   },[isFollowing])
+
+  const handleRemoveFollower = (followerUserId) => {
+    dispatch(removeFollowerAction({ 
+      followerUserId,
+      userId: user.id,
+      jwt: token
+    }));
+  };
+
   if (!user) return null;
   return (
     <div className="py-10">
@@ -134,9 +145,9 @@ setIsFollow(isFollowing)
       </div>
       <FollowerModal
       followers={user.follower}
-      //onRemoveFollower={handleUnFollowUser}
       isOpen={isFollowerModalOpen}
       onClose={handleCloseFollowerModal}
+      onRemoveFollower={isRequser ? handleRemoveFollower : undefined}
       />
       <FollowingModal
       following={user.following}
