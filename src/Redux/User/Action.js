@@ -233,3 +233,21 @@ export const getFollowingsAction = (data) => async (dispatch) => {
     console.log("catch error -  ", error);
   }
 };
+
+export const removeFollowerAction = (data) => async (dispatch) => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/users/remove-follower/${data.followerUserId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + data.jwt,
+      },
+    });
+    const result = await res.json();
+    // Sau khi xóa, có thể gọi lại getFollowersAction để cập nhật danh sách
+    dispatch(getUserProfileAction(data.jwt));
+    return result;
+  } catch (error) {
+    console.log("catch error -  ", error);
+  }
+};
