@@ -24,6 +24,11 @@ const Chat = () => {
   const [stompClient, setStompClient] = useState(null);
   const [connected, setConnected] = useState(false);
 
+  // Lấy userId của mình 1 lần duy nhất
+  const userIdStr = localStorage.getItem('userId');
+  console.log("userIdStr from localStorage:", userIdStr);
+  const currentUserId = userIdStr ? parseInt(userIdStr, 10) : null;
+  console.log("currentUserId:", currentUserId);
   // Get the JWT token from localStorage
   const getToken = () => {
     const token = localStorage.getItem('token');
@@ -53,7 +58,6 @@ const Chat = () => {
 
     const socket = new SockJS(`${BASE_URL}/ws`);
 
-    // Add event listeners to the raw socket for better error handling
     socket.onopen = () => {
       console.log('WebSocket connection opened');
     };
@@ -86,33 +90,27 @@ const Chat = () => {
       console.log('Connected to WebSocket');
       setConnected(true);
       setStompClient(client);
-      setError(null); // Clear any previous errors
+      setError(null);
 
-      // Subscribe to user-specific messages
       client.subscribe('/user/queue/messages', (message) => {
         try {
           const messageData = JSON.parse(message.body);
           console.log('Received message:', messageData);
 
-          // If the message is from the currently selected user, add it to the messages
           if (selectedUser && messageData.senderId === selectedUser.id) {
             setMessages(prevMessages => [...prevMessages, messageData]);
             scrollToBottom();
 
-            // Mark message as read
             if (messageData.id) {
               axios.put(`/api/messages/read/${messageData.id}`, {}, apiConfig)
                 .catch(err => console.error('Error marking message as read:', err));
             }
           } else {
-            // If message is from another user, refresh the conversation
-            // This ensures the UI stays in sync with the latest messages
             if (selectedUser) {
               fetchConversation(selectedUser.id);
             }
           }
 
-          // Update unread counts and recent chats
           fetchUnreadCounts();
           fetchRecentChats();
         } catch (err) {
@@ -131,7 +129,6 @@ const Chat = () => {
       console.log('WebSocket connection closed');
       setConnected(false);
 
-      // Try to reconnect after a delay
       setTimeout(() => {
         if (!client.active) {
           console.log('Attempting to reconnect WebSocket...');
@@ -171,9 +168,7 @@ const Chat = () => {
     try {
       const response = await axios.get(`/api/messages/conversation/${userId}`, apiConfig);
       setMessages(response.data);
-      // Mark all messages as read
       await axios.put(`/api/messages/read-all/${userId}`, {}, apiConfig);
-      // Update unread counts
       fetchUnreadCounts();
     } catch (err) {
       console.error('Error fetching conversation:', err);
@@ -189,11 +184,8 @@ const Chat = () => {
       return;
     }
     try {
-      // Lấy danh sách following
       const followingRes = await axios.get(`/api/users/${myId}/following`, apiConfig);
-      // Lấy danh sách follower
       const followerRes = await axios.get(`/api/users/${myId}/follower`, apiConfig);
-      // Gộp và loại trùng
       const all = [...followingRes.data, ...followerRes.data];
       const unique = [];
       const ids = new Set();
@@ -215,15 +207,13 @@ const Chat = () => {
     if (!newMessage.trim() || !selectedUser) return;
 
     try {
-      const currentUserId = parseInt(localStorage.getItem('userId'));
       const messageData = {
         receiverId: selectedUser.id,
         content: newMessage
       };
 
-      // Create a temporary message object for UI
       const tempMessage = {
-        id: Date.now(), // Temporary ID
+        id: Date.now(),
         senderId: currentUserId,
         receiverId: selectedUser.id,
         content: newMessage,
@@ -243,46 +233,42 @@ const Chat = () => {
         }
       };
 
-      // Add message to UI immediately
       setMessages(prevMessages => [...prevMessages, tempMessage]);
       setNewMessage('');
       scrollToBottom();
 
-      // Try to send through WebSocket if connected
       if (stompClient && connected) {
         stompClient.publish({
           destination: '/app/chat.send',
           body: JSON.stringify(messageData)
         });
-        console.log('Message sent via WebSocket');
-      } else {
-        // Fallback to REST API
-        console.log('WebSocket not connected, using REST API fallback');
-        const response = await axios.post('/api/messages/send', messageData, apiConfig);
+        fetchRecentChats();
 
-        // Update the temporary message with the actual message data
+        console.log('Message sent via WebSocket');
+        // Không gọi API nữa, tin nhắn sẽ được cập nhật khi nhận từ WebSocket
+      } else {
+        // Nếu không có WebSocket, gửi qua API và cập nhật lại ID thực
+        const response = await axios.post('/api/messages/send', messageData, apiConfig);
         setMessages(prevMessages => 
           prevMessages.map(msg => 
             msg.id === tempMessage.id ? response.data : msg
           )
         );
+        fetchRecentChats();
+
       }
     } catch (err) {
       console.error('Error sending message:', err);
       setError('Failed to send message');
-
-      // Try to reconnect WebSocket
       if (!connected) {
         connectWebSocket();
       }
     }
   };
 
-  // Delete a message
   const deleteMessage = async (messageId) => {
     try {
       await axios.delete(`/api/messages/messages/${messageId}`, apiConfig);
-      // Remove the message from the UI
       setMessages(messages.filter(msg => msg.id !== messageId));
     } catch (err) {
       console.error('Error deleting message:', err);
@@ -290,18 +276,12 @@ const Chat = () => {
     }
   };
 
-  // Select a user to chat with
   const selectUser = (user) => {
     setSelectedUser(user);
     fetchConversation(user.id);
-
-    // Ensure WebSocket connection is active
     if (!connected) {
-      console.log('WebSocket not connected, reconnecting...');
       connectWebSocket();
     }
-
-    // Update URL without reloading the page
     navigate(`/chat/${user.id}`);
   };
 
@@ -314,25 +294,21 @@ const Chat = () => {
     setShowNewChatModal(false);
   };
 
-  // Scroll to bottom of messages
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Handle Enter key press to send message
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       sendMessage();
     }
   };
 
-  // Render timestamp in a readable format
   const formatTime = (timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
-  // New Chat Modal Component
   const NewChatModal = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -347,7 +323,6 @@ const Chat = () => {
       }
     };
 
-    // Nếu không search thì hiển thị suggestedUsers, nếu có search thì hiển thị searchResults
     const displayUsers = searchTerm.trim() ? searchResults : suggestedUsers;
 
     return (
@@ -403,16 +378,13 @@ const Chat = () => {
     );
   };
 
-  // Initial load and WebSocket setup
   useEffect(() => {
     fetchRecentChats();
     fetchUnreadCounts();
     connectWebSocket();
 
-    // Set up periodic connection check
     const connectionCheckInterval = setInterval(() => {
       if (!connected) {
-        console.log('WebSocket connection check: disconnected, reconnecting...');
         connectWebSocket();
       }
     }, 30000);
@@ -425,7 +397,6 @@ const Chat = () => {
     };
   }, []);
 
-  // Handle URL parameter for user selection
   useEffect(() => {
     if (userId && recentChats.length > 0) {
       const user = recentChats.find(chat => chat.id === parseInt(userId));
@@ -448,7 +419,7 @@ const Chat = () => {
       {/* Left sidebar with recent chats */}
       <div className="sidebar">
         <div className="sidebar-header">
-          <h2>Messages</h2>
+          <h2>Tin nhắn</h2>
           <button className="new-chat-btn" onClick={startNewChat}>
             <i className="fa fa-edit"></i>
           </button>
@@ -521,12 +492,12 @@ const Chat = () => {
               {messages.map(message => (
                 <div 
                   key={message.id} 
-                  className={`message ${message.senderId === parseInt(localStorage.getItem('userId')) ? 'sent' : 'received'}`}
+                  className={`message ${message.senderId === currentUserId ? 'sent' : 'received'}`}
                 >
                   <div className="message-content">
                     {message.content}
                     <span className="message-time">{formatTime(message.sentAt)}</span>
-                    {message.senderId === parseInt(localStorage.getItem('userId')) && (
+                    {message.senderId === currentUserId && (
                       <button 
                         className="delete-btn" 
                         onClick={() => deleteMessage(message.id)}
