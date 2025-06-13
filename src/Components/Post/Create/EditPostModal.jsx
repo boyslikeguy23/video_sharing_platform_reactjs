@@ -14,12 +14,12 @@ import { GoLocation } from "react-icons/go";
 import { GrEmoji } from "react-icons/gr";
 import { Button } from "@chakra-ui/button";
 import { useDispatch, useSelector } from "react-redux";
-import { createPost, findPostByIdAction } from "../../../Redux/Post/Action";
+import { createPost, findPostByIdAction, editPost } from "../../../Redux/Post/Action";
 import { uploadToCloudinary } from "../../../Config/UploadToCloudinary";
 import CommentModal from "../../Comment/CommentModal";
 import SpinnerCard from "../../Spinner/Spinner";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
-import { editPost } from "../../../Redux/Post/Action";
+
 const EditPostModal = ({ onOpen, isOpen, onClose }) => {
   const finalRef = React.useRef(null);
   const [file, setFile] = useState(null);
@@ -69,12 +69,10 @@ useEffect(() => {
       data: postData,
     };
     if (token && postData.image) {
-      navigate(-1);
+      await dispatch(editPost(data));
       handleClose();
-      
-
+      navigate(-1);
     }
-
     console.log("data --- ", data);
   };
   function handleClose() {
