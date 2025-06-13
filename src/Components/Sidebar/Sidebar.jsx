@@ -50,7 +50,7 @@ const Sidebar = () => {
 
   const handleLogout=()=>{
     localStorage.clear();
-    navigate("/login")
+    window.location.href = "/login";
   }
 
   // useEffect(() => {
