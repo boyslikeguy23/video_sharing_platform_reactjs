@@ -40,7 +40,11 @@ const Signin = () => {
 
   useEffect(() => {
     if (user?.reqUser?.username && token) {
-      navigate(`/${user.reqUser?.username}`);
+      if (user?.reqUser?.id) {
+        localStorage.setItem('userId', user.reqUser.id);
+      }
+     // navigate(`/${user.reqUser?.username}`);
+      navigate(`/`);
       toast({
         title: "Đăng nhập thành công",
         status: "success",
