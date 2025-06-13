@@ -73,6 +73,13 @@ const CreatePostModal = ({ onOpen, isOpen, onClose }) => {
       file &&
       (file.type.startsWith("image/") || file.type.startsWith("video/"))
     ) {
+      // Check file size (30MB = 30 * 1024 * 1024 bytes)
+      const maxSize = 30 * 1024 * 1024; // 30MB in bytes
+      if (file.size > maxSize) {
+        alert("Video không được vượt quá 30MB");
+        return;
+      }
+
       setFile(file);
       const reader = new FileReader();
       reader.readAsDataURL(file);
