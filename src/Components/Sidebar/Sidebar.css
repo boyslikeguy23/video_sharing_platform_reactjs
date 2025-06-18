@@ -1,18 +1,37 @@
+.logo {
+  font-family: 'Billabong', cursive;
+  font-size: 30px;
+  color: #222222;
+  text-shadow: 1px 1px 3px #000000;
+}
 
-  .logo {
-    font-family: 'Billabong', cursive;
-    font-size: 30px;
-    color: #222222;
-    text-shadow: 1px 1px 3px #000000;
-  }
+.hideItemName{
+  display: none;
+}
+.instagram-text-gradient {
+background: linear-gradient(45deg, #fd5949, #d6249f, #285AEB);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+color: transparent;
+}
 
-  .hideItemName{
-    display: none;
+.dropdown-menu-custom {
+  min-width: 140px;
+  width: 160px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  text-align: center;
+  z-index: 50;
+  border: 1px solid #eee;
+}
+
+@media (max-width: 640px) {
+  .dropdown-menu-custom {
+    left: 50% !important;
+    transform: translateX(-50%);
+    min-width: 120px;
+    width: 70vw;
   }
-  .instagram-text-gradient {
-  background: linear-gradient(45deg, #fd5949, #d6249f, #285AEB);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
 }

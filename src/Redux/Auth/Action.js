@@ -13,24 +13,27 @@ export const signinAction = (data) => async (dispatch) => {
         Authorization: "Basic " + btoa(data.email + ":" + data.password),
       },
     });
+    if (!res.ok) {
+      let errorMsg = "Invalid username hoặc password";
+      try {
+        const errorData = await res.json();
+        errorMsg = errorData.error || errorData.message || errorMsg;
+      } catch (e) {
+        // Nếu không parse được JSON thì giữ nguyên errorMsg mặc định
+      }
+      dispatch({ type: SIGN_IN, payload: { error: errorMsg } });
+      return;
+    }
     const token = res.headers.get("Authorization");
-
+    if (!token) {
+      dispatch({ type: SIGN_IN, payload: { error: "Invalid username hoặc password" } });
+      return;
+    }
     localStorage.setItem("token", token);
-    console.log("token from header :- ", token);
-    dispatch({type:SIGN_IN,payload:token})
+    dispatch({ type: SIGN_IN, payload: token });
   } catch (error) {
-    console.log("catch error ", error);
+    dispatch({ type: SIGN_IN, payload: { error: "Lỗi kết nối server!" } });
   }
-  // if (res.ok && token) {
-  //     localStorage.setItem("token", token);
-  //     dispatch({ type: SIGN_IN, payload: token });
-  //   } else {
-  //     const errorMsg = "Email hoặc mật khẩu không đúng!";
-  //     dispatch({ type: SIGN_IN_ERROR, payload: errorMsg });
-  //   }
-  // } catch (error) {
-  //   dispatch({ type: SIGN_IN_ERROR, payload: "Lỗi kết nối server!" });
-  // }
 };
 
 export const signupAction = (data) => async (dispatch) => {

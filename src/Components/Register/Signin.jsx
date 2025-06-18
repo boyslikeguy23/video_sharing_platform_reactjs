@@ -28,22 +28,24 @@ const Signin = () => {
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user,signin } = useSelector((store) => store);
+  const user = useSelector((store) => store.user);
+  const signin = useSelector((store) => store.auth.signin);
   const toast = useToast();
   const logoText = collapsed ? "I" : "Vidstagram";
   const token = localStorage.getItem("token");
-  console.log("token in signin page ",token)
+  console.log("token in signin page ", token);
   console.log("reqUser -: ", user);
+  console.log("signin redux (init): ", signin);
+
   useEffect(() => {
     if (token) dispatch(getUserProfileAction(token || signin));
-  }, [signin,token]);
+  }, [signin, token]);
 
   useEffect(() => {
     if (user?.reqUser?.username && token) {
       if (user?.reqUser?.id) {
         localStorage.setItem('userId', user.reqUser.id);
       }
-     // navigate(`/${user.reqUser?.username}`);
       navigate(`/`);
       toast({
         title: "Đăng nhập thành công",
@@ -54,20 +56,21 @@ const Signin = () => {
     }
   }, [user.reqUser]);
 
-//   useEffect(() => {
-//   if (signin?.error) {
-//     toast({
-//       title: "Đăng nhập không thành công",
-//       description: signin.error || "Vui lòng kiểm tra lại email và mật khẩu.",
-//       status: "error",
-//       duration: 8000,
-//       isClosable: true,
-//     });
-//   }
-// }, [signin?.error, toast]);
+  useEffect(() => {
+    console.log("signin redux (effect): ", signin);
+    if (signin && typeof signin === 'object' && signin.error) {
+      toast({
+        title: "Đăng nhập không thành công",
+        description: signin.error || "Vui lòng kiểm tra lại email và mật khẩu.",
+        status: "error",
+        duration: 8000,
+        isClosable: true,
+      });
+    }
+  }, [signin, toast]);
 
   const handleSubmit = (values, actions) => {
-    console.log(values);
+    console.log("Đăng nhập submit với: ", values);
     dispatch(signinAction(values));
     actions.setSubmitting(false);
   };

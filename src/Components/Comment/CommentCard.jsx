@@ -80,9 +80,9 @@ const CommentCard = ({ comment }) => {
               alt=""
             />
           </div>
-          <div className="ml-3 comment-content">
+          <div className="ml-3 comment-content ">
             <p>
-              <span className="font-semibold" onClick={() => handleNavigate(comment.userDto.username)}> {comment.userDto.username}</span>
+              <span className="font-semibold cursor-pointer" onClick={() => handleNavigate(comment.userDto.username)}> {comment.userDto.username}</span>
               <span className="ml-2">{comment.content}</span>
             </p>
             <div className="flex items-center space-x-3 text-xs opacity-60 pt-2">

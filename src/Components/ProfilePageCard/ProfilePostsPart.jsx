@@ -7,14 +7,19 @@ import { AiOutlineTable, AiOutlineUser } from "react-icons/ai";
 import ReqUserPostCard from "./ReqUserPostCard";
 import { useDispatch, useSelector } from "react-redux";
 import { reqUserPostAction, savePostAction } from "../../Redux/Post/Action";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import CommentModal from "../Comment/CommentModal";
 // import {reqUserPostAction} from "../../Redux/Post/Action.js"
+import { timeDifference } from "../../Config/Logic";
 
-const ProfilePostsPart = ({user}) => {
-  const [activeTab, setActiveTab] = useState("Post");
-  const { post} = useSelector((store) => store);
+const ProfilePostsPart = ({ user, posts, isRequser }) => {
+  const [activeTab, setActiveTab] = useState("Bài đăng");
+  const { post } = useSelector((store) => store);
   const token = localStorage.getItem("token");
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
+  const { postId } = useParams();
+  const location = useLocation();
 
   const tabs = [
     {
@@ -23,7 +28,9 @@ const ProfilePostsPart = ({user}) => {
       activeTab: "",
     },
     { tab: "Reels", icon: <RiVideoLine className="text-xs" />, activeTab: "" },
-    { tab: "Đã lưu", icon: <BiBookmark className="text-xs" />, activeTab: "" },
+    ...(isRequser
+      ? [{ tab: "Đã lưu", icon: <BiBookmark className="text-xs" />, activeTab: "" }]
+      : []),
     {
       tab: "Được gắn thẻ",
       icon: <AiOutlineUser className="text-xs" />,
@@ -37,9 +44,15 @@ const ProfilePostsPart = ({user}) => {
       userId: user?.id,
     };
     dispatch(reqUserPostAction(data));
-  }, [user,post.createdPost]);
+  }, [user, post.createdPost]);
 
-
+  // Khi click vào bài đăng, điều hướng đến /p/:id
+  // const handlePostClick = (item) => {
+  //   navigate(`/p/${item.id}`);
+  // };
+  //   const handlePostClick = (item) => {
+  //     navigate(`/p/${item.id}`, { state: { background: location } });
+  //   };
 
   return (
     <div className="">
@@ -59,13 +72,15 @@ const ProfilePostsPart = ({user}) => {
       </div>
       <div>
         <div className="flex flex-wrap">
-          {post.reqUserPost?.length > 0 &&
-            activeTab==="Post"? post.reqUserPost?.map((item, index) => (
-              <ReqUserPostCard post={item} key={index} />
-            )):activeTab==="Saved"?user?.savedPost?.map((item, index) => (
-              <ReqUserPostCard post={item} key={index} />
-            )):
-            ""}
+          {posts.length > 0 && activeTab === "Bài đăng"
+            ? posts.map((item, index) => (
+                <ReqUserPostCard post={item} key={index} />
+              ))
+            : activeTab === "Đã lưu"
+            ? user?.savedPost?.map((item, index) => (
+                <ReqUserPostCard post={item} key={index} />
+              ))
+            : ""}
         </div>
       </div>
     </div>

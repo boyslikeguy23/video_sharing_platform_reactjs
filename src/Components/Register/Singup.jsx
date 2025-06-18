@@ -16,23 +16,26 @@ import { useNavigate } from "react-router-dom";
 
 
 const validationSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email address").required("Required"),
+  email: Yup.string().email("Sai địa chỉ email").required("Yêu cầu nhập thông tin"),
   username: Yup.string()
-    .min(4, "Username must be at least 4 characters")
-    .required("Required"),
+    .min(4, "Username phải ít nhất 4 kí tự")
+    .required("Yêu cầu nhập thông tin"),
   password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
-    .required("Required"),
+    .min(8, "Mật khẩu phải ít nhất 8 kí tự")
+    .required("Yêu cầu nhập thông tin"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref('password'), null], 'Mật khẩu nhập lại không khớp')
+    .required('Yêu cầu nhập thông tin'),
   name: Yup.string()
-    .min(2, "Name must be at least 2 characters")
-    .required("Required"),
+    .min(2, "Tên phải ít nhất 2 kí tự")
+    .required("Yêu cầu nhập thông tin"),
 });
  
 
 const Signup = () => {
   const [collapsed, setCollapsed] = useState(false);
   const logoText = collapsed ? "I" : "Vidstagram";
-  const initialValues = { email: "", username: "", password: "", name:"" };
+  const initialValues = { email: "", username: "", password: "", confirmPassword: "", name:"" };
   const dispatch=useDispatch();
   const {auth}=useSelector(store=>store);
   const navigate=useNavigate();
@@ -46,16 +49,23 @@ const Signup = () => {
   };
 
   useEffect(()=>{
-if(auth.signup?.username){
-  
-  navigate("/login")
-  toast({
-    title: 'Đăng nhập thành công',
-    status: 'success',
-    duration: 8000,
-    isClosable: true,
-  })
-}
+    if(auth.signup?.username){
+      navigate("/login")
+      toast({
+        title: 'Đăng ký thành công',
+        status: 'success',
+        duration: 8000,
+        isClosable: true,
+      })
+    } else if(auth.signup?.error || auth.signup?.message) {
+      toast({
+        title: 'Đăng ký thất bại',
+        description: auth.signup?.error || auth.signup?.message,
+        status: 'error',
+        duration: 8000,
+        isClosable: true,
+      })
+    }
   },[auth.signup])
 
   return (
@@ -140,9 +150,25 @@ if(auth.signup?.username){
                   </FormControl>
                 )}
               </Field>
+              <Field name="confirmPassword">
+                {({ field, form }) => (
+                  <FormControl
+                    isInvalid={form.errors.confirmPassword && form.touched.confirmPassword}
+                    mb={4}
+                  >
+                    <Input
+                      {...field}
+                      type="password"
+                      id="confirmPassword"
+                      placeholder="Nhập lại mật khẩu"
+                    />
+                    <FormErrorMessage>{form.errors.confirmPassword}</FormErrorMessage>
+                  </FormControl>
+                )}
+              </Field>
               <p className="text-center">
                 Những người sử dụng dịch vụ của chúng tôi có thể đã tải thông tin liên hệ của bạn 
-                lên Instagram. Tìm hiểu thêm
+                lên Vidstagram. Tìm hiểu thêm
 
               </p>
               <p className="mt-5 text-center">

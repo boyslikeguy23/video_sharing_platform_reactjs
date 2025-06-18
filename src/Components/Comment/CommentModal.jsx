@@ -35,8 +35,11 @@ const CommentModal = ({
   handleUnLikePost,
   handleSavePost,
   handleUnSavePost,
-  isPostLiked,
-  isSaved,
+  isPostLiked: isPostLikedProp,
+  isSaved: isSavedProp,
+  handleDeletePost,
+  handleOpenEditPostModal,
+  isOwnPost
 }) => {
   const dispatch = useDispatch();
   const jwt = localStorage.getItem("token");
@@ -44,8 +47,28 @@ const CommentModal = ({
   const [commentContent, setCommentContent] = useState("");
   const { postId } = useParams();
   const navigate = useNavigate();
+  const [showDropdown, setShowDropdown] = useState(false);
 
-  // console.log("coments ---- ",comments)
+  // Local state giống PostCard
+  const [isPostLiked, setIsPostLiked] = useState(isPostLikedProp);
+  const [isSaved, setIsSaved] = useState(isSavedProp);
+  const [numberOfLikes, setNumberOfLikes] = useState(post.singlePost?.likedByUsers?.length || 0);
+
+  // Luôn đồng bộ local state với Redux store khi post hoặc user thay đổi
+  useEffect(() => {
+    // Kiểm tra likedByUsers là object hay id
+    let liked = false;
+    if (Array.isArray(post.singlePost?.likedByUsers)) {
+      if (post.singlePost.likedByUsers.length > 0 && typeof post.singlePost.likedByUsers[0] === 'object') {
+        liked = post.singlePost.likedByUsers.some(u => u.id === user.reqUser?.id);
+      } else {
+        liked = post.singlePost.likedByUsers.includes(user.reqUser?.id);
+      }
+    }
+    setIsPostLiked(liked);
+    setIsSaved(user.reqUser?.savedPost?.some(p => p.id === post.singlePost?.id));
+    setNumberOfLikes(post.singlePost?.likedByUsers?.length || 0);
+  }, [post.singlePost, user.reqUser]);
 
   useEffect(() => {
     if (postId) {
@@ -83,10 +106,58 @@ const CommentModal = ({
   
   const handleClose = () => {
     onClose();
-    navigate("/");
+    // navigate("/");
+    //navigate(-1);
+    if (window.history.state && window.history.state.usr && window.history.state.usr.background) {
+    navigate(window.history.state.usr.background.pathname);
+  } else {
+    navigate(-1);
+  }
   };
 
-  
+  function handleClick() {
+    setShowDropdown(!showDropdown);
+  }
+  function handleWindowClick(event) {
+    if (!event.target.matches('.dots-comment-modal')) {
+      setShowDropdown(false);
+    }
+  }
+  useEffect(() => {
+    window.addEventListener('click', handleWindowClick);
+    return () => {
+      window.removeEventListener('click', handleWindowClick);
+    };
+  }, []);
+
+  // Handler mới cập nhật local state và dispatch action
+  const handleLike = () => {
+    if (!isPostLiked) {
+      handleLikePost();
+      setIsPostLiked(true);
+      setNumberOfLikes((prev) => prev + 1);
+    }
+  };
+  const handleUnLike = () => {
+    if (isPostLiked) {
+      handleUnLikePost();
+      setIsPostLiked(false);
+      setNumberOfLikes((prev) => Math.max(prev - 1, 0));
+    }
+  };
+  const handleSave = () => {
+    if (!isSaved) {
+      handleSavePost();
+      setIsSaved(true);
+    }
+  };
+  const handleUnSave = () => {
+    if (isSaved) {
+      handleUnSavePost();
+      setIsSaved(false);
+    }
+  };
+
   return (
     <div>
       <Modal size={"4xl"} onClose={handleClose} isOpen={isOpen} isCentered>
@@ -122,11 +193,57 @@ const CommentModal = ({
                       <p>{post?.singlePost?.user?.username}</p>
                     </div>
                   </div>
-                  <BsThreeDots/>
+                  {isOwnPost && (
+                    <div className="dropdown" style={{ position: 'relative' }}>
+                      <BsThreeDots onClick={handleClick} className="dots-comment-modal cursor-pointer" />
+                      {showDropdown && (
+                        <div className="p-2 w-[10rem] shadow-xl bg-white absolute right-0 z-10">
+                          <p
+                            onClick={() => {
+                              handleOpenEditPostModal(post.singlePost?.id);
+                              setShowDropdown(false);
+                            }}
+                            className="hover:bg-slate-300 py-2 px-4 cursor-pointer font-semibold"
+                          >
+                            Sửa
+                          </p>
+                          <hr />
+                          <p
+                            onClick={() => {
+                              handleDeletePost(post.singlePost?.id);
+                              setShowDropdown(false);
+                            }}
+                            className="hover:bg-slate-300 px-4 py-2 cursor-pointer font-semibold"
+                          >
+                            Xoá
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <hr />
 
-                <div className="comments ">
+                <div className="comments " style={{ maxHeight: '450px', overflowY: 'auto', paddingBottom: '16px' }}>
+                  {post.singlePost?.caption && (
+                    <div className="flex items-start mb-4 mt-4">
+                      <img
+                        className="w-8 h-8 rounded-full mr-3"
+                        src={
+                          post?.singlePost?.user?.userImage ||
+                          "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                        }
+                        alt=""
+                      />
+                      <div>
+                        <span className="font-semibold mr-2">{post?.singlePost?.user?.username}</span>
+                        <span>{post.singlePost.caption}</span>
+                        <div className="text-xs text-gray-400 mt-1">
+                          {timeDifference(post?.singlePost?.createdAt)}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   {comments.comments?.length > 0 &&
                     comments.comments?.map((item) => (
                       <CommentCard comment={item} />
@@ -138,12 +255,12 @@ const CommentModal = ({
                     <div className="flex items-center space-x-2 ">
                       {isPostLiked ? (
                         <AiFillHeart
-                          onClick={handleUnLikePost}
+                          onClick={handleUnLike}
                           className="text-2xl hover:opacity-50 cursor-pointer text-red-600"
                         />
                       ) : (
                         <AiOutlineHeart
-                          onClick={handleLikePost}
+                          onClick={handleLike}
                           className="text-2xl hover:opacity-50 cursor-pointer "
                         />
                       )}
@@ -154,20 +271,20 @@ const CommentModal = ({
                     <div className="cursor-pointer">
                       {isSaved ? (
                         <BsBookmarkFill
-                          onClick={() => handleUnSavePost(post.singlePost?.id)}
+                          onClick={handleUnSave}
                           className="text-xl"
                         />
                       ) : (
                         <BsBookmark
-                          onClick={() => handleSavePost(post.singlePost?.id)}
+                          onClick={handleSave}
                           className="text-xl hover:opacity-50 cursor-pointer"
                         />
                       )}
                     </div>
                   </div>
-                  {post.singlePost?.likedByUsers?.length > 0 && (
+                  {numberOfLikes > 0 && (
                     <p className="text-sm font-semibold py-2">
-                      {post.singlePost?.likedByUsers?.length} lượt thích{" "}
+                      {numberOfLikes} lượt thích{" "}
                     </p>
                   )}
                   <p className="opacity-70 pb-5">

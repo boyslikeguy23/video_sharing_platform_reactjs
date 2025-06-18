@@ -108,23 +108,25 @@ const Sidebar = () => {
             <IoReorderThreeOutline className="text-2xl" />
             {!isSearchBoxVisible && <p className="ml-5">Khác</p>}
           </div>
-          <div className="absolute bottom-20 left-14  w-[70%]">
-            {showDropdown && (
-              <div className="shadow-md">
-                <p className=" w-full py-2 text-base px-4 border-t border-b  cursor-pointer">
-                  Thay đổi diện mạo
-                </p>
-                <p className=" w-full py-2 text-base px-4 border-t border-b cursor-pointer">
-                  Đã lưu
-                </p>
-                <p onClick={handleLogout} className=" w-full py-2 text-base px-4 border-t border-b cursor-pointer">
-                  Đăng xuất
-                </p>
-              
-              
-              </div>
-            )}
-          </div>
+          {/* Responsive Dropdown Menu */}
+          {showDropdown && (
+            <div
+              className="dropdown-menu-custom absolute left-0 bottom-12 min-w-[140px] w-40 bg-white rounded shadow-lg text-center z-50 border"
+            >
+              <p
+                className="py-2 text-base px-4 border-b cursor-pointer hover:bg-gray-100"
+                onClick={() => navigate("/account/edit")}
+              >
+                Cài đặt
+              </p>
+              <p
+                onClick={handleLogout}
+                className="py-2 text-base px-4 cursor-pointer hover:bg-gray-100"
+              >
+                Đăng xuất
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

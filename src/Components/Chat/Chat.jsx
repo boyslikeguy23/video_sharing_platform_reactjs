@@ -85,6 +85,7 @@ const Chat = () => {
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
     });
+    setStompClient(client);
 
     client.onConnect = (frame) => {
       console.log('Connected to WebSocket');
@@ -96,6 +97,12 @@ const Chat = () => {
         try {
           const messageData = JSON.parse(message.body);
           console.log('Received message:', messageData);
+
+          if (messageData.eventType === 'MESSAGE_DELETED') {
+            setMessages(prev => prev.filter(msg => msg.id !== messageData.messageId));
+            fetchRecentChats();
+            return;
+          }
 
           if (selectedUser && messageData.senderId === selectedUser.id) {
             setMessages(prevMessages => [...prevMessages, messageData]);
@@ -266,13 +273,24 @@ const Chat = () => {
     }
   };
 
-  const deleteMessage = async (messageId) => {
-    try {
-      await axios.delete(`/api/messages/messages/${messageId}`, apiConfig);
-      setMessages(messages.filter(msg => msg.id !== messageId));
-    } catch (err) {
-      console.error('Error deleting message:', err);
-      setError('Failed to delete message');
+  const handleDeleteMessage = (messageId) => {
+    if (stompClient && connected) {
+      stompClient.publish({
+        destination: '/app/chat.delete',
+        body: String(messageId)
+      });
+    } else {
+
+      // alert("Websocket chưa kết nối")
+      axios.delete(`/api/messages/messages/${messageId}`, apiConfig)
+        .then(() => {
+          setMessages(prevMessages => prevMessages.filter(msg => msg.id !== messageId));
+          fetchRecentChats();
+        })
+        .catch(err => {
+          console.error('Error deleting message:', err);
+          setError('Failed to delete message');
+        });
     }
   };
 
@@ -430,34 +448,43 @@ const Chat = () => {
         ) : error ? (
           <div className="error">{error}</div>
         ) : (
-          <div className="recent-chats">
-            {recentChats.map(user => (
-              <div 
-                key={user.id} 
-                className={`chat-item ${selectedUser?.id === user.id ? 'active' : ''}`}
-                onClick={() => selectUser(user)}
-              >
-                <div className="avatar-container">
-                  <img
-                    src={
-                      (user.userImage || user.image)
-                        ? (user.userImage || user.image).startsWith('http')
-                          ? (user.userImage || user.image)
-                          : `${BASE_URL.replace(/\/$/, '')}/${(user.userImage || user.image).replace(/^\//, '')}`
-                        : 'https://res.cloudinary.com/mxtungfinalproject/image/upload/v1749298887/default_avatar_pb0sdc.jpg'
-                    }
-                    alt={user.username}
-                    onError={e => { e.target.onerror = null; e.target.src = 'https://res.cloudinary.com/mxtungfinalproject/image/upload/v1749298887/default_avatar_pb0sdc.jpg'; }}
-                  />
-                  {unreadCounts[user.id] > 0 && (
-                    <span className="unread-badge">{unreadCounts[user.id]}</span>
-                  )}
+         <div className="recent-chats">
+            {[...recentChats]
+              .sort((a, b) => {
+              const aTime = a.lastMessage?.sentAt || a.lastMessage?.createdAt;
+              const bTime = b.lastMessage?.sentAt || b.lastMessage?.createdAt;
+              if (!aTime && !bTime) return 0;
+              if (!aTime) return 1;   // a không có lastMessage => xuống cuối
+              if (!bTime) return -1;  // b không có lastMessage => xuống cuối
+              return new Date(bTime) - new Date(aTime);
+            })
+              .map(user => (
+                <div 
+                  key={user.id} 
+                  className={`chat-item ${selectedUser?.id === user.id ? 'active' : ''}`}
+                  onClick={() => selectUser(user)}
+                >
+                  <div className="avatar-container">
+                    <img
+                      src={
+                        (user.userImage || user.image)
+                          ? (user.userImage || user.image).startsWith('http')
+                            ? (user.userImage || user.image)
+                            : `${BASE_URL.replace(/\/$/, '')}/${(user.userImage || user.image).replace(/^\//, '')}`
+                          : 'https://res.cloudinary.com/mxtungfinalproject/image/upload/v1749298887/default_avatar_pb0sdc.jpg'
+                      }
+                      alt={user.username}
+                      onError={e => { e.target.onerror = null; e.target.src = 'https://res.cloudinary.com/mxtungfinalproject/image/upload/v1749298887/default_avatar_pb0sdc.jpg'; }}
+                    />
+                    {unreadCounts[user.id] > 0 && (
+                      <span className="unread-badge">{unreadCounts[user.id]}</span>
+                    )}
+                  </div>
+                  <div className="user-info">
+                    <span className="username">{user.username}</span>
+                  </div>
                 </div>
-                <div className="user-info">
-                  <span className="username">{user.username}</span>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         )}
       </div>
@@ -478,14 +505,20 @@ const Chat = () => {
                 alt={selectedUser.username}
                 onError={e => { e.target.onerror = null; e.target.src = 'https://res.cloudinary.com/mxtungfinalproject/image/upload/v1749298887/default_avatar_pb0sdc.jpg'; }}
               />
-              <span className="username">{selectedUser.username}</span>
-              <div className="connection-status">
+              <span 
+                className="username" 
+                style={{ cursor: 'pointer'}}
+                onClick={() => navigate(`/${selectedUser.username}`)}
+              >
+                {selectedUser.username}
+              </span>
+              {/* <div className="connection-status">
                 {connected ? (
                   <span className="status-connected">Connected</span>
                 ) : (
                   <span className="status-disconnected">Disconnected</span>
                 )}
-              </div>
+              </div> */}
             </div>
             
             <div className="messages-container">
@@ -500,7 +533,7 @@ const Chat = () => {
                     {message.senderId === currentUserId && (
                       <button 
                         className="delete-btn" 
-                        onClick={() => deleteMessage(message.id)}
+                        onClick={() => handleDeleteMessage(message.id)}
                       >
                         <i className="fa fa-trash"></i>
                       </button>
@@ -524,7 +557,7 @@ const Chat = () => {
           </>
         ) : (
           <div className="no-conversation">
-            <p>Select a conversation or start a new one</p>
+            <p>Chọn một đoạn hội thoại hoặc bắt đầu cuộc hội thoại mới</p>
           </div>
         )}
       </div>

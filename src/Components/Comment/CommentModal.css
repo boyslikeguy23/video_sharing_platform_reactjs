@@ -6,13 +6,13 @@
     white-space: normal; /* Cho phép xuống dòng */
     word-wrap: break-word; /* Tự động xuống dòng khi quá dài */
     overflow: visible;
-    word-break: break-all; /* Thêm dòng này để tự xuống dòng khi không có dấu cách */
+    word-break: break-word; /* Thêm dòng này để tự xuống dòng khi không có dấu cách */
 
 }
 
 .comment-content {
   max-width: 80%;
-  word-break: break-all;
+  word-break: break-word;
   white-space: pre-wrap;
 }
 

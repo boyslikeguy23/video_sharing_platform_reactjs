@@ -53,7 +53,10 @@ const UserDetailCard = ({ user, isRequser, isFollowing }) => {
   const handleCloseFollowingModal = () => {
     setFollowingModalOpen(false);
     navigate(`/${user.username}`);
+  };
 
+  const handleMessage = () => {
+    navigate(`/chat/${user.id}`);
   };
 
   const handleFollowUser = () => {
@@ -111,7 +114,7 @@ setIsFollow(isFollowing)
               )}
             </button>
             <button className="text-xs py-1 px-5 bg-slate-100 hover:bg-slate-300 rounded-md font-semibold">
-              {isRequser ? "Add tools" : "Message"}
+              {isRequser ? "Add tools" : <span onClick={handleMessage}>Message</span>}
             </button>
             <TbCircleDashed className="text-xl" />
           </div>

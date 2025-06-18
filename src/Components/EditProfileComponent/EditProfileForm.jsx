@@ -16,10 +16,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   editUserDetailsAction,
   getUserProfileAction,
+  findByUsernameAction,
 } from "../../Redux/User/Action";
 import { useToast } from "@chakra-ui/react";
 import ChangeProfilePhotoModal from "./ChangeProfilePhotoModal";
 import { uploadToCloudinary } from "../../Config/UploadToCloudinary";
+import { debounce } from "lodash";
 
 const EditProfileForm = () => {
   const { user } = useSelector((store) => store);
@@ -28,48 +30,113 @@ const EditProfileForm = () => {
   const token = localStorage.getItem("token");
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [imageFile,setImageFile]=useState(null);
+  const [isCheckingUsername, setIsCheckingUsername] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
+  const [currentUsername, setCurrentUsername] = useState("");
 
-  const [initialValues, setInitialValues] = useState({
-    name: "",
-    username: "",
-    email: "",
-    bio: "",
-    mobile: "",
-    gender: "",
-    website: "",
-    private: false,
-    
-  });
+  const initialValues = {
+    name: user.reqUser?.name || "",
+    username: user.reqUser?.username || "",
+    email: user.reqUser?.email || "",
+    bio: user.reqUser?.bio || "",
+    mobile: user.reqUser?.mobile || "",
+    gender: user.reqUser?.gender || "",
+    website: user.reqUser?.website || "",
+    private: user.reqUser?.private || false,
+  };
+
   useEffect(() => {
     dispatch(getUserProfileAction(token));
   }, [token]);
 
   useEffect(() => {
-    console.log("reqUser", user.reqUser);
-    const newValue = {};
-
-    for (let item in initialValues) {
-      if (user.reqUser && user.reqUser[item]) {
-        newValue[item] = user.reqUser[item];
+    if (user.reqUser) {
+      const newValue = {};
+      for (let item in initialValues) {
+        if (user.reqUser[item]) {
+          newValue[item] = user.reqUser[item];
+        }
       }
+      // setInitialValues(prev => ({ ...prev, ...newValue }));
     }
-
-    console.log("new value -: ", newValue);
-
-    formik.setValues(newValue);
+    // eslint-disable-next-line
   }, [user.reqUser]);
 
+  useEffect(() => {
+    if (user.findByUsername && currentUsername) {
+      const response = user.findByUsername;
+      console.log("Checking username response:", response);
+      
+      if (currentUsername === user.reqUser?.username) {
+        setUsernameError("");
+      }
+      else if (response.id && response.username === currentUsername) {
+        setUsernameError("Tên đại diện này đã được sử dụng");
+      } else {
+        setUsernameError("");
+      }
+      setIsCheckingUsername(false);
+    }
+  }, [user.findByUsername, currentUsername, user.reqUser?.username]);
+
+  const checkUsername = async (username) => {
+    if (!username) {
+      setUsernameError("");
+      return;
+    }
+
+    if (username === user.reqUser?.username) {
+      setUsernameError("");
+      setIsCheckingUsername(false);
+      return;
+    }
+    
+    setIsCheckingUsername(true);
+    setCurrentUsername(username);
+    
+    try {
+      const data = {
+        username,
+        token
+      };
+      await dispatch(findByUsernameAction(data));
+    } catch (error) {
+      console.error("Error checking username:", error);
+      setUsernameError("Có lỗi xảy ra khi kiểm tra tên đại diện");
+      setIsCheckingUsername(false);
+    }
+  };
+
+  const debouncedCheckUsername = React.useCallback(
+    debounce((username) => {
+      checkUsername(username);
+    }, 500),
+    []
+  );
+
   const formik = useFormik({
-    initialValues: { ...initialValues },
-    onSubmit: (values) => {
+    initialValues,
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      if (usernameError) {
+        toast({
+          title: "Lỗi",
+          description: "Vui lòng chọn tên đại diện khác",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
+      }
+
       const data = {
         jwt: token,
         data: { ...values, id: user.reqUser?.id },
       };
-      dispatch(editUserDetailsAction(data));
+      await dispatch(editUserDetailsAction(data));
+      await dispatch(getUserProfileAction(token));
       toast({
-        title: "Câp nhật thành công...",
-
+        title: "Cập nhật thành công",
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -139,7 +206,7 @@ const EditProfileForm = () => {
               </FormHelperText>
             </div>
           </FormControl>
-          <FormControl className="flex " id="username">
+          <FormControl className="flex " id="username" isInvalid={!!usernameError}>
             <FormLabel className="w-[15%]">Tên đại diện</FormLabel>
             <div className="w-full">
               <Input
@@ -147,11 +214,21 @@ const EditProfileForm = () => {
                 className="w-full"
                 type="text"
                 {...formik.getFieldProps("username")}
+                onChange={(e) => {
+                  formik.handleChange(e);
+                  debouncedCheckUsername(e.target.value);
+                }}
               />
               <FormHelperText className="text-xs">
                 Trong hầu hết các trường hợp, bạn sẽ có thể đổi tên người dùng của mình trở lại
                 trong 14 ngày nữa. Tìm hiểu thêm
               </FormHelperText>
+              {usernameError && (
+                <FormHelperText color="red.500">{usernameError}</FormHelperText>
+              )}
+              {isCheckingUsername && (
+                <FormHelperText>Đang kiểm tra tên đại diện...</FormHelperText>
+              )}
             </div>
           </FormControl>
           <FormControl className="flex " id="website">
@@ -188,18 +265,18 @@ const EditProfileForm = () => {
               hồ sơ công khai của bạn.
             </p>
           </div>
-{/* 
-          <FormControl className="flex " id="email">
-            <FormLabel className="w-[15%]">Email address</FormLabel>
+
+          <FormControl className="flex" id="email">
+            <FormLabel className="w-[15%]">Email</FormLabel>
             <div className="w-full">
               <Input
-                placeholder="Email"
+                value={user.reqUser?.email || ""}
                 className="w-full"
                 type="email"
-                {...formik.getFieldProps("email")}
+                disabled
               />
             </div>
-          </FormControl> */}
+          </FormControl>
 
           <FormControl className="flex " id="mobile">
             <FormLabel className="w-[15%]">Số điện thoại</FormLabel>

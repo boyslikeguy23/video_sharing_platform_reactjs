@@ -70,18 +70,23 @@ useEffect(() => {
     };
     if (token && postData.image) {
       await dispatch(editPost(data));
+      if (postData.id) {
+        await dispatch(findPostByIdAction({ jwt: token, postId: postData.id }));
+      }
       handleClose();
-      navigate(-1);
     }
     console.log("data --- ", data);
   };
   function handleClose() {
-    onClose();
+    onClose && onClose();
     setFile(null);
     setPostData({ image: "", caption: "", location: "" });
-    // navigate(-1);
-    navigate(location.state?.from || "/");
-
+    // Quay lại background nếu có, nếu không thì về trang chủ
+    if (location.state && location.state.background) {
+      navigate(location.state.background.pathname, { replace: true });
+    } else {
+      navigate("/");
+    }
   }
   useEffect(() => {
     if (postId) {

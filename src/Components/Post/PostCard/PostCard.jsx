@@ -50,14 +50,15 @@ const PostCard = ({
   const [isSaved, setIsSaved] = useState(false);
   const [isPostLiked, setIsPostLiked] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [numberOfLikes, setNumberOfLike] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [openEditPostModal,setOPenEditPostModal]=useState(false);
+  const [openEditPostModal,setOpenEditPostModal]=useState(false);
 
   const handleCommnetInputChange = (e) => {
     setCommentContent(e.target.value);
   };
-  const [numberOfLikes, setNumberOfLike] = useState(0);
+ 
 
   const data = {
     jwt: token,
@@ -147,17 +148,15 @@ const PostCard = ({
   };
 
   const handleCloseEditPostModal=()=>{
-    setOPenEditPostModal(false)
+    setOpenEditPostModal(false)
   }
   const handleOpenEditPostModal=(postId)=>{
-    // navigate(`/p/${postId}/edit`)
     navigate(`/p/${postId}/edit`, { state: { from: location_page.pathname } });
-
-    setOPenEditPostModal(true);
+    setOpenEditPostModal(true);
   }
   // const handleOpenEditPostModal=()=>{
   //   navigate(`/p/${post?.id}/edit`)
-  //   setOPenEditPostModal(true);
+  //   setOpenEditPostModal(true);
   // }
   const handleEditPost=()=>{
     
@@ -262,7 +261,7 @@ const PostCard = ({
         </div>
         <div className="w-full py-2 px-5">
           {numberOfLikes > 0 && (
-            <p className="text-sm">{numberOfLikes} lượt thích </p>
+            <p className="text-sm font-semibold py-2">{numberOfLikes} lượt thích </p>
           )}
 
          <p className="py-2">
@@ -300,11 +299,18 @@ const PostCard = ({
         handleUnSavePost={handleUnSavePost}
         handleUnLikePost={handleUnLikePost}
         isPostLiked={isPostLiked}
+        setIsPostLiked={setIsPostLiked}
+        numberOfLikes={numberOfLikes}
+        setNumberOfLike={setNumberOfLike}
+        isPostSaved={isSaved}
         isSaved={isSaved}
         postData={post}
         isOpen={isOpen}
         onClose={onClose}
         onOpen={onOpen}
+        handleDeletePost={handleDeletePost}
+        handleOpenEditPostModal={handleOpenEditPostModal}
+        isOwnPost={isOwnPost}
       />
     </div>
   );
