@@ -3,12 +3,11 @@ export const isReqUser = (userId1, userId2) => {
 };
 
 export const isFollowing = (reqUser, user2) => {
-  if (reqUser && user2) {
+  if (reqUser && user2 && Array.isArray(user2.follower)) {
     for (let item of user2.follower) {
       if (reqUser.id === item.id) return true;
     }
   }
-
   return false;
 };
 
@@ -116,14 +115,14 @@ export function timeDifference(timestamp) {
 
   // Format the time difference as a string
   if (weeks > 0) {
-    return weeks + " week" + (weeks === 1 ? "" : "s") + " ago";
+    return weeks + " tuần" + " trước";
   } else if (days > 0) {
-    return days + " day" + (days === 1 ? "" : "s") + " ago";
+    return days + " ngày" + " trước";
   } else if (hours > 0) {
-    return hours + " hour" + (hours === 1 ? "" : "s") + " ago";
+    return hours + " giờ" +  " trước";
   } else if (minutes > 0) {
-    return minutes + " minute" + (minutes === 1 ? "" : "s") + " ago";
+    return minutes + " phút"  + " trước";
   } else {
-    return seconds + " second" + (seconds === 1 ? "" : "s") + " ago";
+    return seconds + " giây" + " trước";
   }
 }
