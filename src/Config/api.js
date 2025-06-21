@@ -1,1 +1,1 @@
-export const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5454"
+export const BASE_URL = process.env.REACT_APP_API_URL || "https://videosharingplatform-production.up.railway.app"
