@@ -3,6 +3,7 @@ import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 import store from '../Redux/Store/Store';
 import { setConnected, setError, addMessage } from '../Redux/Chat/Action';
+import { BASE_URL } from './api';
 
 class WebSocketService {
   constructor(token) {
@@ -14,7 +15,7 @@ class WebSocketService {
   }
 
   connect() {
-    const socket = new SockJS('http://localhost:5454/ws');
+    const socket = new SockJS(`${BASE_URL}/ws`);
     this.stompClient = new Client({
       webSocketFactory: () => socket,
       connectHeaders: {
