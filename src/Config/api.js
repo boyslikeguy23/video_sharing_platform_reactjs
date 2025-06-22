@@ -1,1 +1,1 @@
-export const BASE_URL = process.env.REACT_APP_API_URL || "https://videosharingplatform-production.up.railway.app"
+export const BASE_URL = process.env.REACT_APP_API_URL || "https://demo-deployment-t2aw.onrender.com"
